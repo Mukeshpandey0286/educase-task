@@ -19,16 +19,16 @@ mysql2/promise for database connection
 cors for Cross-Origin Resource Sharing
 body-parser for parsing JSON requests</b>
 
-<h4>Endpoints</h4>
-<b>1. Add a Single School</b>
-Endpoint: /addSchool
-Method: POST
+<h4>Endpoints</h4><.br>
+<b>1. Add a Single School</b><.br>
+Endpoint: /addSchool<.br>
+Method: POST</br>
 
-<b>2. List Schools by Proximity</b>
-Endpoint: /listSchools
-Method: GET
-Query Parameters:
-latitude: User's latitude (required)
+<b>2. List Schools by Proximity</b></br>
+Endpoint: /listSchools</br>
+Method: GET</br>
+Query Parameters:</br>
+latitude: User's latitude (required)</br>
 longitude: User's longitude (required)
 
 
