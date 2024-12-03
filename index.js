@@ -7,15 +7,20 @@ const dotenv = require('dotenv').config();
 const app = express();
 const port = process.env.PORT;
 
+// Middleware
 app.use(bodyParser.json());
-app.use(cors()); 
+app.use(cors());
 
 // MySQL Connection
 const db = mysql.createPool({
     host: process.env.HOST,
+    port: process.env.DB_PORT,
     user: process.env.USER,
     password: process.env.PASS,
     database: process.env.DB,
+    ssl: {
+        rejectUnauthorized: false,
+    },
 });
 
 // Add School API
@@ -34,13 +39,16 @@ app.post('/addSchool', async (req, res) => {
         await db.execute(query, [name, address, latitude, longitude]);
         res.status(201).json({ message: 'School added successfully' });
     } catch (err) {
+        console.log(err);
+        
         res.status(500).json({ error: 'Error adding school', details: err.message });
     }
 });
 
+// Calculate Distance (Haversine formula)
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
     const toRadians = (deg) => (deg * Math.PI) / 180;
-    const R = 6371; 
+    const R = 6371; // Earth's radius in km
 
     const dLat = toRadians(lat2 - lat1);
     const dLon = toRadians(lon2 - lon1);
@@ -56,6 +64,7 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
     return R * c;
 };
 
+// List Schools API
 app.get('/listSchools', async (req, res) => {
     const { latitude, longitude } = req.query;
 
@@ -78,6 +87,7 @@ app.get('/listSchools', async (req, res) => {
             ),
         }));
 
+        // Sort by distance
         schoolsWithDistance.sort((a, b) => a.distance - b.distance);
 
         res.status(200).json(schoolsWithDistance);
@@ -86,6 +96,7 @@ app.get('/listSchools', async (req, res) => {
     }
 });
 
+// Start the Server
 app.listen(port, () => {
     console.log(`Backend running on http://localhost:${port}`);
 });
